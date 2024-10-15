@@ -3,6 +3,8 @@ from telethon.sync import TelegramClient
 from telethon.tl.types import Channel, Chat,  TypeInputPeer
 from dotenv import load_dotenv
 
+from telegram_bot.image_reader import read_image
+
 load_dotenv()
 
 api_id = os.getenv('API_ID')
@@ -18,6 +20,7 @@ phone = str(phone)
 
 client = TelegramClient('TradingBot', api_id, api_hash)
 
+
 async def start_client():
     await client.connect()
 
@@ -28,12 +31,14 @@ async def start_client():
     value = await get_chan()
     channel = await client.get_input_entity(value)
 
-    async for message in client.iter_messages(channel, limit=10):
-        if message.media:
-            file_path = await message.download_media()
-            print(f"File downloaded to {file_path}")
-        else:
-            print(f"Message: {message.message}")
+    while True:  # Infinite loop
+        async for message in client.iter_messages(channel, limit=5):
+            if message.media:
+                file_path = await message.download_media(file=os.path.join(os.getcwd(), "media"))
+                image= read_image(file_path)
+                print(image)
+            else:
+                print(f"Message: {message.message}")
 
 
 async def get_chan() -> TypeInputPeer:
