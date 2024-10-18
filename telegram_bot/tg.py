@@ -32,7 +32,7 @@ async def start_client():
     channel = await client.get_input_entity(value)
 
     while True:  # Infinite loop
-        async for message in client.iter_messages(channel, limit=5):
+        async for message in client.iter_messages(channel, limit=3):
             if message.media:
                 file_path = await message.download_media(file=os.path.join(os.getcwd(), "media"))
                 image= read_image(file_path)
